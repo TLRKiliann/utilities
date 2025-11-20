@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Données des Cours</title>
+    <!-- link rel="stylesheet" href="style.css" -->
+</head>
+<body>
+    <h1>Données des Cours</h1>
+    <table id="data-table" border="1">
+        <thead>
+            <tr>
+                <th>Numéros de la semaine</th>
+                <th>Numéros du cours</th>
+                <th>Dates</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('/data');
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données');
+                }
+                const data = await response.json();
+                const tableBody = document.getElementById('data-table').querySelector('tbody');
+                
+                data.forEach(row => {
+                    const newRow = tableBody.insertRow();
+                    newRow.insertCell().textContent = row['Numéros de la semaine'];
+                    newRow.insertCell().textContent = row['Numéros du cours'];
+                    newRow.insertCell().textContent = row['Dates'];
+                });
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        loadData();
+        async function displayHtml() {
+            try {
+                const res = await fetch('/data');
+                    if (!res.ok) {
+                        throw new Error('Erreur lors de la récupération des données');
+                    }
+                    const data_2 = await res.json();
+                    const tableBody = document.getElementById('coursesTable').querySelector('tbody');
+                    
+                    data_2.forEach(course => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${course['Numéros de la semaine']}</td>
+                            <td>${course['Numéros du cours']}</td>
+                            <td>${course['Dates']}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+    </script>
+</body>
+</html>
