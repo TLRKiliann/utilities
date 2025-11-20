@@ -1,7 +1,5 @@
 # Utilities
 
-
-
 To convert Mousepad file.md to file.html
 
 You can install pandoc
@@ -10,8 +8,7 @@ You can install pandoc
 
 `pandoc my_file.md -o my_file.html`
 
-## To improve design
-
+## To improve style
 
 You can improve style to place this code below, before ``` of file.md
 
