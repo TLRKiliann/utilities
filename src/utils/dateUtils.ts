@@ -1,4 +1,4 @@
-import type { EndDatesYearsTypes } from "./types";
+import type { EndDatesYearsTypes } from "../types";
 
 // + 63j après la date figurant dans la cms collection (9 semaines après)
 export const functionDate = (date: Date): string => {

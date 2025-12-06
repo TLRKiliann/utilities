@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
-    "strict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "types": ["node"],   // Ajoute cette ligne pour inclure les types de Node.js
     "outDir": "./dist"
   },
   "include": ["./**/*.ts"],

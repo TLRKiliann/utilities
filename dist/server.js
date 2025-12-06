@@ -1,24 +1,26 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
-const express_1 = __importDefault(require("express"));
-const node_cron_1 = __importDefault(require("node-cron"));
-const fs_1 = require("fs");
-const path_1 = __importDefault(require("path"));
-const dateUtils_1 = require("./dateUtils");
-dotenv_1.default.config();
-const UPDATE_FILE = path_1.default.join(__dirname, "update-dates.json");
-const app = (0, express_1.default)();
+//import dotenv from 'dotenv';
+const dotenv = require('dotenv');
+const cron = require('node-cron');
+//import express from 'express';
+const express = require("express");
+//import cron from 'node-cron';
+//import { promises as fs } from 'fs';
+const fs = require('fs').promises;
+//import path from 'path';
+const path = require("path");
+const dateUtils_1 = require("./utils/dateUtils");
+dotenv.config();
+const UPDATE_FILE = path.join(__dirname, "update-dates.json");
+const app = express();
 const PORT = 3000;
 // Retrieve informations from CMS Collection
 const informations = [];
 // Load from JSON file
 const loadUpdateDates = async () => {
     try {
-        const data = await fs_1.promises.readFile(UPDATE_FILE, 'utf8');
+        const data = await fs.readFile(UPDATE_FILE, 'utf8');
         return JSON.parse(data);
     }
     catch {
@@ -33,7 +35,7 @@ let dateToUpdate = [];
 // Save in JSON file (async)
 const saveUpdateDates = async () => {
     try {
-        await fs_1.promises.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), 'utf8');
+        await fs.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), 'utf8');
         console.log("Update standard saved successfully!");
     }
     catch (err) {
@@ -43,7 +45,7 @@ const saveUpdateDates = async () => {
 // Erase JSON file completely & write new value of date (new year)
 const overwriteFile = async () => {
     try {
-        await fs_1.promises.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), "utf8");
+        await fs.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), "utf8");
         console.log(`Le fichier ${UPDATE_FILE} a été écrasé avec succès.`);
     }
     catch (err) {
@@ -276,7 +278,7 @@ const fetchCMSData = async () => {
     Fonction cron qui sert à lancer la function fetchCMSData();
     Le lancement est programmé pour chaque vendredi à 08:00 ("* 8 * * 5")
 */
-node_cron_1.default.schedule("56 16 * * 3", async () => {
+cron.schedule("56 16 * * 3", async () => {
     const now = new Date();
     console.log("------ Cron Job lancé ------");
     console.log(`Date et heure actuelles : ${now.toLocaleString()}`);

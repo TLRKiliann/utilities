@@ -1,10 +1,15 @@
 import type { DataType, ItemsType, InformationsType, EndDatesYearsTypes } from "./types";
-import dotenv from 'dotenv';
-import express from 'express';
-import cron from 'node-cron';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { parseDate, functionDate, formatUpdateFriday, deuxDernieresSemaines } from './dateUtils';
+//import dotenv from 'dotenv';
+const dotenv = require('dotenv');
+const cron = require('node-cron');
+//import express from 'express';
+const express = require("express");
+//import cron from 'node-cron';
+//import { promises as fs } from 'fs';
+const fs = require('fs').promises;
+//import path from 'path';
+const path = require("path");
+import { parseDate, functionDate, formatUpdateFriday, deuxDernieresSemaines } from './utils/dateUtils';
 dotenv.config();
 
 const UPDATE_FILE = path.join(__dirname, "update-dates.json");
