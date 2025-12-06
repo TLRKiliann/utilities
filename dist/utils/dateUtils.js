@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deuxDernieresSemaines = exports.parseDate = exports.formatUpdateFriday = exports.functionDate = void 0;
+exports.generateCourseDates = exports.deuxDernieresSemaines = exports.parseDate = exports.formatUpdateFriday = exports.functionDate = void 0;
 // + 63j après la date figurant dans la cms collection (9 semaines après)
 const functionDate = (date) => {
     const newDate = new Date(date);
@@ -42,24 +42,6 @@ const parseDate = (dateStr) => {
     return new Date(year, month - 1, day);
 };
 exports.parseDate = parseDate;
-/*
-// Plus besoin normalement !!!
-export const formatHolidayUpdate = (date: Date): string => {
-    // 3 jours avant et 8 heures
-    const newDate: Date = new Date(date);
-    newDate.setDate(newDate.getDate() - 3);
-    newDate.setHours(newDate.getHours() + 8);
-
-    const nextDates = [
-        String(newDate.getDate()).padStart(2, "0"),
-        String(newDate.getMonth() + 1).padStart(2, "0"),
-        newDate.getFullYear()
-    ].join("/");
-    const hours = String(newDate.getHours()).padStart(2, "0");
-    const minutes = String(newDate.getMinutes()).padStart(2, "0");
-    return `${nextDates} ${hours}:${minutes}`;
-};
-*/
 // Calculer les 2 dernières semaines de l'année
 const formatDate = (date) => {
     return date.toLocaleDateString("fr-FR");
@@ -123,7 +105,7 @@ exports.deuxDernieresSemaines = deuxDernieresSemaines;
     chaque nouvelle année après la première semaine
     du nouvel an.
 */
-function generateCourseDates(year) {
+const generateCourseDates = (year) => {
     // Fonction pour obtenir le premier lundi de l'année donnée
     function getFirstMondayOfYear(year) {
         let date = new Date(year, 0, 1); // 1er janvier de l'année donnée
@@ -171,10 +153,11 @@ function generateCourseDates(year) {
         }
     }
     return courses;
-}
+};
+exports.generateCourseDates = generateCourseDates;
 // Exemple d'utilisation pour l'année 2025
 let year = new Date().getFullYear(); // Pour l'année actuelle
-let coursesForYear = generateCourseDates(year);
+let coursesForYear = (0, exports.generateCourseDates)(year);
 // Affichage des résultats
 console.log(coursesForYear);
 /*

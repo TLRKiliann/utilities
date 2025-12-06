@@ -1,18 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//import dotenv from 'dotenv';
 const dotenv = require('dotenv');
 const cron = require('node-cron');
-//import express from 'express';
 const express = require("express");
-//import cron from 'node-cron';
-//import { promises as fs } from 'fs';
 const fs = require('fs').promises;
-//import path from 'path';
 const path = require("path");
 const dateUtils_1 = require("./utils/dateUtils");
 dotenv.config();
-const UPDATE_FILE = path.join(__dirname, "update-dates.json");
+const UPDATE_FILE = path.join(__dirname, "./utils/update-dates.json");
 const app = express();
 const PORT = 3000;
 // Retrieve informations from CMS Collection
@@ -98,13 +93,15 @@ const handleIdValue = async (itemId, idValue, date, semaine, cours) => {
     // Update prog dans 8 semaines, le vendredi à 08:00
     const update = (0, dateUtils_1.formatUpdateFriday)(formatUpdateData);
     // Update prog -3 jours, le vendredi à 08:00
-    const formatHolidayData = (0, dateUtils_1.parseDate)(nextDate);
+    //const formatHolidayData: Date = parseDate(nextDate);
     //const updateHoliday: string = formatHolidayUpdate(formatHolidayData);
+    const currentYear = new Date().getFullYear();
+    let coursesForStartYear = (0, dateUtils_1.generateCourseDates)(currentYear);
+    console.log(coursesForStartYear);
     /*
         Calcul des 2 dernières semaines de l'année en cours.
         La 1ère comprend Noël et la seconde comprend nouvel an (1)
     */
-    const currentYear = new Date().getFullYear();
     const lastWeeksPerYear = (0, dateUtils_1.deuxDernieresSemaines)(currentYear);
     // 1er et second lundi des vacances
     const firstLundiVacances = lastWeeksPerYear.avantDerniereSemaine.debut;
@@ -211,7 +208,7 @@ const fetchCMSData = async () => {
         }
     });
     const data = await response.json();
-    // console.log("data", data);
+    console.log("data", data);
     try {
         if (data.items && data.items.length > 0) {
             data.items.forEach((item) => {
@@ -274,11 +271,12 @@ const fetchCMSData = async () => {
         return formattedDate;
     }
 };
+//fetchCMSData();
 /*
     Fonction cron qui sert à lancer la function fetchCMSData();
     Le lancement est programmé pour chaque vendredi à 08:00 ("* 8 * * 5")
 */
-cron.schedule("56 16 * * 3", async () => {
+cron.schedule("20 8 * * 1", async () => {
     const now = new Date();
     console.log("------ Cron Job lancé ------");
     console.log(`Date et heure actuelles : ${now.toLocaleString()}`);
