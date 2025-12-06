@@ -43,14 +43,14 @@ const saveUpdateDates = async (): Promise<void> => {
 };
 
 // Erase JSON file completely & write new value of date (new year)
-const overwriteFile = async (): Promise<void> => {
-    try {
-        await fs.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), "utf8");
-        console.log(`Le fichier ${UPDATE_FILE} a été écrasé avec succès.`);
-    } catch (err) {
-        console.error('Erreur lors de l\'écriture du fichier', err);
-    }
-};
+// const overwriteFile = async (): Promise<void> => {
+//     try {
+//         await fs.writeFile(UPDATE_FILE, JSON.stringify(dateToUpdate, null, 2), "utf8");
+//         console.log(`Le fichier ${UPDATE_FILE} a été écrasé avec succès.`);
+//     } catch (err) {
+//         console.error('Erreur lors de l\'écriture du fichier', err);
+//     }
+// };
 
 // -----------
 // UPDATE CMS
@@ -96,21 +96,18 @@ const handleIdValue = async (
     idValue: number,
     date: string,
     semaine: string,
-    cours: string,
-    dateFormattedToday: string
+    cours: string
 ): Promise<void> => {
 
     const formatData: Date = parseDate(date);
     const formatUpdateData: Date = parseDate(date);
-
-    console.log("Date du jour:", dateFormattedToday);
 
     /*  
         Update des dates dans la CMS Collection, 63 jours après
         la date inscrite dans la CMS Collection, selon (update)
     */
     let nextDate: string = functionDate(formatData); // Déjà +63j !!!
-    // Update prog dans 8 semaines, le vendredi à 08:00
+    // Update prog le vendredi de la 8ème semaines, à 08:00
     const update: string = formatUpdateFriday(formatUpdateData);
     // Si les dates tombent sur les vacances
     const noDates: string = "--/--/----";
@@ -123,7 +120,7 @@ const handleIdValue = async (
     */
     const currentYear: number = new Date().getFullYear();
     let coursesForStartYear: {day: string, date: string}[] = generateCourseDates(currentYear);
-    console.log(coursesForStartYear);
+    console.log("generation dates for coursesForStartYear", coursesForStartYear);
 
     /*
         Calcul des 2 dernières semaines de l'année en cours.
@@ -135,11 +132,10 @@ const handleIdValue = async (
     const secondLundiVacances: string = lastWeeksPerYear.derniereSemaine.debut;
     // 1er et second vendredi des vacances
     //const firstFridayHoliday: string = lastWeeksPerYear.avantDerniereSemaine.fin;
-    //const secondFridayHoliday: string = lastWeeksPerYear.derniereSemaine.fin;
+    const secondFridayHoliday: string = lastWeeksPerYear.derniereSemaine.fin;
 
-    //console.log("+ Dates 1er lundi et 1er vendredi (vacances)", firstLundiVacances, firstFridayHoliday);
-    //console.log("++ Dates 2er lundi et 2er vendredi (vacances)", secondLundiVacances, secondFridayHoliday);
-
+    console.log("+ Dates 1er lundi et 1er vendredi (vacances)", firstLundiVacances);
+    console.log("++ Dates 2er lundi et 2er vendredi (vacances)", secondLundiVacances, secondFridayHoliday);
 
     const aujourdHui: Date = new Date();
     const moisActuel: number = aujourdHui.getMonth();
@@ -147,12 +143,14 @@ const handleIdValue = async (
 
     if (moisActuel > 0) {
         // +63j
-        console.log("Mois actuel > 1", moisActuel);
+        console.log("Mois actuel > janvier", moisActuel);
 
-        if ((nextDate === firstLundiVacances) || (nextDate === secondLundiVacances)) {
+        if ((nextDate === firstLundiVacances)) {
+
             const currentIndex = informations.findIndex((info: { idValue: number; }) => 
                 info.idValue === idValue
             );
+
             if (currentIndex !== -1) { // 18 = 2 x 9 cours = 2 semaines vacances
                 for (let i = currentIndex; i < informations.length; i++) {
                     const nextItem = informations[i];
@@ -160,10 +158,11 @@ const handleIdValue = async (
                         nextItem.idValue, noDates, nextItem.cours);
                     //await updateCMSItem(nextItem.itemId, nextItem.idValue, noDates);
                 }
-                // !!! PAS de UPDATE !!!
+                return;
             }
-            return;
+            
         } else if ((nextDate !== firstLundiVacances) && (nextDate !== secondLundiVacances)) {
+
             console.log(`MAJ du CMS par idValue ${idValue}: ${nextDate}`, "correspondant à",
                 `Semaine ${semaine}`, cours);
 
@@ -171,25 +170,27 @@ const handleIdValue = async (
                 dateToUpdate.push(update);
                 await saveUpdateDates();
                 console.log("Update programmer pour dans 8 semaines !");
-                //await updateCMSItem(itemId, idValue, nextDate); // idValue === 1
-                //return;
+                //await updateCMSItem(itemId, idValue, nextDate);
             }
             //await updateCMSItem(itemId, idValue, nextDate);
         }
     } else if (aujourdHui === premierJourAnnee) {
-        // générer les dates pour 8 semaines
-        dateToUpdate.push(update);
-        await saveUpdateDates();
-        console.log("On est le 1er jour de l'année !!!");
+        // Génère les dates pour les 8 première semaines
         for (let course of coursesForStartYear) {
-            // console.log(`Date: ${course.date}`);
-            await updateCMSItem(itemId, idValue, course.date);
+            console.log(`Date of courses: ${course.date}`);
+            // await updateCMSItem(itemId, idValue, course.date);
         };
         return;
-        // let coursesForStartYear: {day: string, date: string}[] = generateCourseDates(currentYear);
-        // await updateCMSItem(itemId, idValue, coursesForStartYear);
     } else {
-        console.log("!!! Pas de nouvelles dates ni de update !!!");
+        // update pour vendredi de la 8ème semaine
+        if (nextDate === secondFridayHoliday) {
+            dateToUpdate.push(update);
+            await saveUpdateDates();
+            console.log("Update checked for friday of last week.");
+            return;
+        } else {
+            console.log("No Update checked for friday of last week.");
+        }
     };
 };
 
@@ -263,10 +264,6 @@ const fetchCMSData = async (): Promise<InformationsType[] | string> => {
     /*
         test la date du jour avec 08:00 (il faut supprimer pour la version finale)!!!
     */
-    const dateFormattedToday: string = `${String(now.getDate()).padStart(2, "0")}/` +
-                                    `${String(now.getMonth() + 1).padStart(2, "0")}/` +
-                                    `${String(now.getFullYear())}`;
-
     now.setHours(8, 0, 0, 0);
     const formattedDateHoursMin: string = `${String(now.getDate()).padStart(2, "0")}/` +
                                 `${String(now.getMonth() + 1).padStart(2, "0")}/` +
@@ -298,8 +295,7 @@ const fetchCMSData = async (): Promise<InformationsType[] | string> => {
                         item.idValue,
                         item.date,
                         item.semaine,
-                        item.cours,
-                        dateFormattedToday
+                        item.cours
                     )
                 };
             };
@@ -319,7 +315,7 @@ const fetchCMSData = async (): Promise<InformationsType[] | string> => {
     Fonction cron qui sert à lancer la function fetchCMSData();
     Le lancement est programmé pour chaque vendredi à 08:00 ("* 8 * * 5")
 */
-cron.schedule("20 8 * * 1", async () => {
+cron.schedule("20 8 * * 1", async (): Promise<void> => {
     const now = new Date();
     console.log("------ Cron Job lancé ------");
     console.log(`Date et heure actuelles : ${now.toLocaleString()}`);

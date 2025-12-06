@@ -63,24 +63,25 @@ export const deuxDernieresSemaines = (annee: number): EndDatesYearsTypes => {
     let avantDernierLundi: Date = new Date(dernierLundi);
     avantDernierLundi.setDate(dernierLundi.getDate() - 7);
 
-    // Calcul des dimanches
-    let avantDernierDimanche: Date = new Date(avantDernierLundi);
-    avantDernierDimanche.setDate(avantDernierLundi.getDate() + 6);
+    // Calcul des vendredis
+    let avantDernierVendredi: Date = new Date(avantDernierLundi);
+    avantDernierVendredi.setDate(avantDernierLundi.getDate() + 4); // Vendredi (4 jours après lundi)
 
-    let dernierDimanche: Date = new Date(dernierLundi);
-    dernierDimanche.setDate(dernierLundi.getDate() + 6);
+    let dernierVendredi: Date = new Date(dernierLundi);
+    dernierVendredi.setDate(dernierLundi.getDate() + 4); // Vendredi (4 jours après lundi)
 
     return {
         avantDerniereSemaine: {
             debut: formatDate(avantDernierLundi),
-            fin: formatDate(avantDernierDimanche),
+            fin: formatDate(avantDernierVendredi),
         },
         derniereSemaine: {
             debut: formatDate(dernierLundi),
-            fin: formatDate(dernierDimanche),
+            fin: formatDate(dernierVendredi),
         }
     };
 };
+
 
 /*
 2025
