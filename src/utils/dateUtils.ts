@@ -1,9 +1,9 @@
 import type { EndDatesYearsTypes } from "../types/types";
 
-// + 63j après la date figurant dans la cms collection (9 semaines après)
+// + 63j ou 56j après la date figurant dans la cms collection (9 semaines après)
 export const functionDate = (date: Date): string => {
     const newDate: Date = new Date(date);
-    newDate.setDate(newDate.getDate() + 63);
+    newDate.setDate(newDate.getDate() + 56);
 
     const nextDates = [
         String(newDate.getDate()).padStart(2, "0"),
@@ -12,11 +12,14 @@ export const functionDate = (date: Date): string => {
     return nextDates;
 };
 
-// Update du vendredi
+/* 
+    Update du vendredi avant la semaine 1 
+    pour le vendredi de la 8ème semaine.
+*/
 export const formatUpdateFriday = (update: Date): string => {
-    // Ajouter 54 jours et 8 heures
+    // Ajouter 56 jours et 8 heures
     const newDate: Date = new Date(update);
-    newDate.setDate(newDate.getDate() + 54);
+    newDate.setDate(newDate.getDate() + 56);
     newDate.setHours(newDate.getHours() + 8);
 
     // Ajuster pour tomber sur vendredi (5 en JS, 0 = dimanche)
@@ -137,8 +140,8 @@ export const generateCourseDates = (year: number): {day: string; date: string}[]
     let startDate: Date = getFirstMondayOfYear(year); // Obtenez le premier lundi après le Nouvel An
     let courses: {day: string; date: string}[] = [];
 
-  // Générer les dates pour 8 semaines
-  for (let week = 0; week < 8; week++) {
+    // Générer les dates pour 8 semaines
+    for (let week = 0; week < 8; week++) {
         let weekStartDate: Date = new Date(startDate); // Cloner la date du premier lundi
         weekStartDate.setDate(startDate.getDate() + (week * 7)); // Ajouter 7 jours pour chaque nouvelle semaine
 
@@ -168,17 +171,20 @@ export const generateCourseDates = (year: number): {day: string; date: string}[]
         for (let i = 0; i < 2; i++) {
             courses.push({ day: 'Jeudi', date: formatDateGenerated(thursdayCourseDate) });
         }
-  }
-  return courses;
+    }
+    return courses;
 }
 
 // Exemple d'utilisation pour l'année 2025
-let year: number = new Date().getFullYear(); // Pour l'année actuelle
-let coursesForYear: {day: string, date: string}[] = generateCourseDates(year);
+//let year: number = new Date().getFullYear(); // Pour l'année actuelle
+//let coursesForYear: {day: string, date: string}[] = generateCourseDates(year);
 
 // Affichage des résultats
-console.log(coursesForYear);
+//console.log(coursesForYear);
 
+/* coursesForYear.forEach(course => {
+  console.log(`Date: ${course.date}`);
+}); */
 /*
 [
   { "day": "Lundi", "date": "06/01/2025" },

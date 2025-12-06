@@ -159,7 +159,7 @@ exports.generateCourseDates = generateCourseDates;
 let year = new Date().getFullYear(); // Pour l'année actuelle
 let coursesForYear = (0, exports.generateCourseDates)(year);
 // Affichage des résultats
-console.log(coursesForYear);
+console.log(coursesForYear["date"]);
 /*
 [
   { "day": "Lundi", "date": "06/01/2025" },

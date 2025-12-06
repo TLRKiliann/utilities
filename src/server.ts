@@ -134,11 +134,11 @@ const handleIdValue = async (
     const firstLundiVacances: string = lastWeeksPerYear.avantDerniereSemaine.debut;
     const secondLundiVacances: string = lastWeeksPerYear.derniereSemaine.debut;
     // 1er et second vendredi des vacances
-    const firstFridayHoliday: string = lastWeeksPerYear.avantDerniereSemaine.fin;
-    const secondFridayHoliday: string = lastWeeksPerYear.derniereSemaine.fin;
+    //const firstFridayHoliday: string = lastWeeksPerYear.avantDerniereSemaine.fin;
+    //const secondFridayHoliday: string = lastWeeksPerYear.derniereSemaine.fin;
 
-    console.log("+ Dates 1er lundi et 1er vendredi (vacances)", firstLundiVacances, firstFridayHoliday);
-    console.log("++ Dates 2er lundi et 2er vendredi (vacances)", secondLundiVacances, secondFridayHoliday);
+    //console.log("+ Dates 1er lundi et 1er vendredi (vacances)", firstLundiVacances, firstFridayHoliday);
+    //console.log("++ Dates 2er lundi et 2er vendredi (vacances)", secondLundiVacances, secondFridayHoliday);
 
 
     const aujourdHui: Date = new Date();
@@ -171,7 +171,7 @@ const handleIdValue = async (
                 dateToUpdate.push(update);
                 await saveUpdateDates();
                 console.log("Update programmer pour dans 8 semaines !");
-                    //await updateCMSItem(itemId, idValue, nextDate); // idValue === 1
+                //await updateCMSItem(itemId, idValue, nextDate); // idValue === 1
                 //return;
             }
             //await updateCMSItem(itemId, idValue, nextDate);
@@ -181,6 +181,11 @@ const handleIdValue = async (
         dateToUpdate.push(update);
         await saveUpdateDates();
         console.log("On est le 1er jour de l'année !!!");
+        for (let course of coursesForStartYear) {
+            // console.log(`Date: ${course.date}`);
+            await updateCMSItem(itemId, idValue, course.date);
+        };
+        return;
         // let coursesForStartYear: {day: string, date: string}[] = generateCourseDates(currentYear);
         // await updateCMSItem(itemId, idValue, coursesForStartYear);
     } else {
