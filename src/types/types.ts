@@ -3,30 +3,30 @@ export type DataType = {
 };
 
 export type ItemsType = {
-    id: string,
-    cmsLocaleId: string | null,
-    lastPublished: string,
-    lastUpdated: string,
-    createdOn: string,
-    isArchived: boolean,
-    isDraft: boolean,
+    id: string;
+    cmsLocaleId: string | null;
+    lastPublished: string;
+    lastUpdated: string;
+    createdOn: string;
+    isArchived: boolean;
+    isDraft: boolean;
     fieldData: {
-        intervenant: string,
-        theme: string,
-        descriptif: string,
-        cours: string,
-        name: string,
-        heure: string,
-        date: string,
-        semaine: string,
-        slug: string,
-        'numero-du-cours': string,
-        'lieu-du-cours': string,
-        'id-value': {idValue: number},
+        intervenant: string;
+        theme: string;
+        descriptif: string;
+        cours: string;
+        name: string;
+        heure: string;
+        date: string;
+        semaine: string;
+        slug: string;
+        'numero-du-cours': string;
+        'lieu-du-cours': string;
+        'id-value': {idValue: number};
         'image-popup': {
-            fileId: string,
-            url: string,
-            alt: string | null
+            fileId: string;
+            url: string;
+            alt: string | null;
         }
     }
 };
@@ -41,11 +41,16 @@ export type InformationsType = {
 
 export type EndDatesYearsTypes = {
     avantDerniereSemaine: {
-        debut: string;
-        fin: string;
+        lundi: string;
+        mardi: string;
+        mercredi: string;
+        jeudi: string;
     },
     derniereSemaine: {
-        debut: string;
-        fin: string;
+        lundi: string;
+        mardi: string;
+        mercredi: string;
+        jeudi: string;
+        vendredi: string;
     }
 };
